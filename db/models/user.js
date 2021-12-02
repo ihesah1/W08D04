@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+//const { create } = require("./user");
 const bcrypt = require("bcrypt");
- const {ObjectId } = mongoose.Schema ;
+ //const {ObjectId } = mongoose.Schema ;
 
 
  const UserSchema = new mongoose.Schema({
@@ -17,7 +18,7 @@ const bcrypt = require("bcrypt");
         unique:true, //one email
         required:true
     },
-    hashed_password : {
+    password : {
         type:String,
         required:true
     } ,  
@@ -26,4 +27,5 @@ const bcrypt = require("bcrypt");
         timestamps:true,
     }
 );
+
  module.exports=mongoose.model("User", UserSchema)

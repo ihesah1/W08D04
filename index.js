@@ -1,38 +1,26 @@
 const express = require("express");
-const mongoose = require("mongoose")
 const dotenv =require("dotenv")
 const helmet=require("helmet")
 const morgan = require("morgan")
 require("dotenv").config();
+require("./db")
 const cors = require("cors");
-
-
-
+const userRoutes = require("./Routers/routes/user");
+const postRoutes = require("./Routers/routes/post");
+let bodyParser = require('body-parser');
+//instatite
 const app = express();
+
+//middlewares
 app.use(express.json());
 app.use(cors());
+// app.use(bodyParser.urlencoded({ extended: false })); 
+// app.use(bodyParser.json());
 
 
-
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-const DB = process.env.DB;
-//connect to database
-mongoose.connect(`mongodb://localhost:27017/${DB}`, options).then(
-  () => {
-    console.log("DB Ready To Use");
-  },
-  (err) => {
-    console.log(err);
-  }
-);
-
-
-
-
-
+//use routes 
+app.use( userRoutes);
+app.use( postRoutes);
 
 
 

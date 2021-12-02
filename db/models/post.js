@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const { create } = require("./user");
  const {ObjectId } = mongoose.Schema ;
-
 
  const PostSchema = new mongoose.Schema({
     text :{
@@ -15,7 +13,7 @@ const { create } = require("./user");
     likes : [{type:ObjectId, ref:"User"}],
     Comments :[{
         type:String,
-        created : {type:Date,default:Date.now},
+        created : {type:Date, default:Date.now},
         postedBy:{
             type: ObjectId,
             trim:"User" ,
@@ -23,7 +21,6 @@ const { create } = require("./user");
     },
 ],
  },
-
     { timestamps: true}
 );
 module.exports=mongoose.model("Post", PostSchema);
