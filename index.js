@@ -7,6 +7,9 @@ require("./db")
 const cors = require("cors");
 const userRoutes = require("./Routers/routes/user");
 const postRoutes = require("./Routers/routes/post");
+const commentRoutes = require("./routers/routes/comment");
+const roleRoutes = require('./routers/routes/role');
+
 let bodyParser = require('body-parser');
 //instatite
 const app = express();
