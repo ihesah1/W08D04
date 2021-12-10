@@ -1,31 +1,13 @@
 const mongoose = require("mongoose");
-//const { create } = require("./user");
-const bcrypt = require("bcrypt");
- //const {ObjectId } = mongoose.Schema ;
 
 
- const UserSchema = new mongoose.Schema({
-    name :{
-        type:String,
-        required:true
-    },
-    image :{
-        data : Buffer,
-        contentTypy: String
-    },
-    email :{
-        type:String,
-        unique:true, //one email
-        required:true
-    },
-    password : {
-        type:String,
-        required:true
-    } ,  
-}
-     ,{
-        timestamps:true,
-    }
-);
+const user = new mongoose.Schema({
+  username: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  isDeleted: { type: Boolean, default: false },
+  role: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
+});
 
- module.exports=mongoose.model("User", UserSchema)
+
+module.exports = mongoose.model("User", user);

@@ -1,82 +1,97 @@
-// const User = require("./../../db/models/post");
-const bcrypt = require("bcrypt")
-require("dotenv").config()
-const SALT = Number(process.env.SALT)
-const userModel = require("./../../db/models/user")
-//const _ =require("lodash");
-//const formidable = require("formidable");
-//const fs = require("fs");
+const userModel = require("./../../db/models/user");
+const bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
 
+///get ausers 
+const getUsers = (req, res) => {
+  userModel
+  .find({})
+  .then((result) => {
+    res.status(200).json(result);
+  })
+  .catch((err) => {
+    res.status(400).json(err);
+  });
+};
+////remove users
 
-const register = async (req, res) => {
-    const { email, password,name } = req.body;
-    
-    const savedEmail = email.toLowerCase();
-    const hashedPassword = await bcrypt.hash(password, SALT);
-    
-    const newUser = new userModel({
-      email: savedEmail,
-      password: hashedPassword,
-      name
-      
-    });
-    newUser
-      .save()
-      .then((result) => {
-        res.status(201).json(result);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-  };
-  // logiiin
-  const login = (req, res) => {
-    const { email, password } = req.body;
-    const SECRET_KEY = process.env.SECRET_KEY;
+const removeUser = (req, res) => {
+    const { id } = req.params;
     userModel
-      .findOne({ email })
-      .then(async (result) => {
+      .findByIdAndUpdate(id, { $set: { isDeleted: true } })
+      .then((result) => {
         if (result) {
-          if (email === result.email) {
-            const payload={
-              role:result.role
-            }
-            const options={
-              expiresIn: 60*60
-            }
-            const token = await jwt.sign(payload, SECRET_KEY, options)
-            console.log(token);
-  
-            const unhashPassword = await bcrypt.compare(password, result.password)
-  
-            if (unhashPassword) {
-              res.status(200).json(result);
-            } else {
-              res.status(400).json("invalid email or password");
-            }
-          } else {
-            res.status(400).json("invalid email or password");
-          }
+          res.status(200).json("user removed");
         } else {
-          res.status(400).json("email does not exist");
+          res.status(200).json("user does not exist");
         }
       })
       .catch((err) => {
-        res.status(400).json(err);
+        res.status(200).json(err);
       });
-    };
+};
+const register = async (req, res) => {
+  const { username, email, password, role } = req.body;
 
-
-const getUser = (req,res,next,id) =>{
-   req.profile.hashed_password = undefined
-   req.profile.salt = undefined
-   res.json(req.profile);
-
+  const SALT = Number(process.env.SALT);
+  const savedEmail = email.toLowerCase();
+  const hashedPassword = await bcrypt.hash(password, SALT);
+  const newUser = new userModel({
+    username: username,
+    email: savedEmail,
+    password: hashedPassword,
+    role,
+  });
+  newUser
+    .save()
+    .then((result) => {
+      res.status(201).json(result);
+    })
+    .catch((err) => {
+      res.status(200).json(err);
+    });
 };
 
+const login = (req, res) => {
+  const { username, email, password } = req.body;
+  const SECRET_KEY = process.env.SECRET_KEY;
+  const savedEmail = email?.toLowerCase();
 
- module.exports={
-    register, 
-    login, 
-    getUser 
- }
+  //here we check either (email or username) entered are true
+  userModel
+    .findOne({$or: [
+      {email:savedEmail},
+      {username}
+  ]}).populate('role').then(async (result) => {
+      if (result) {
+        if (savedEmail === result.email || username === result.username) {
+          const payload = {
+            id: result._id,
+            role: result.role,
+          };
+          const options = {
+            expiresIn: 60 * 60,
+          };
+          const token = jwt.sign(payload, SECRET_KEY, options);
+          const unhashPassword = await bcrypt.compare(
+            password,
+            result.password
+          );
+          if (unhashPassword) {
+            res.status(200).json({result, token});
+          } else {
+            res.status(200).json("invalid email or password");
+          }
+        } else {
+          res.status(200).json("invalid email or password");
+        }
+      } else {
+        res.status(200).json("email does not exist");
+      }
+    })
+    .catch((err) => {
+      res.status(200).json(err);
+    });
+};
+
+module.exports = { register, login, getUsers, removeUser };

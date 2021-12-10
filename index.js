@@ -1,33 +1,24 @@
 const express = require("express");
-const dotenv =require("dotenv")
-const helmet=require("helmet")
-const morgan = require("morgan")
 require("dotenv").config();
-require("./db")
 const cors = require("cors");
-const userRoutes = require("./Routers/routes/user");
-const postRoutes = require("./Routers/routes/post");
-const commentRoutes = require("./routers/routes/comment");
-const roleRoutes = require('./routers/routes/role');
-
-let bodyParser = require('body-parser');
-//instatite
+require("./db");
 const app = express();
-
-//middlewares
 app.use(express.json());
 app.use(cors());
-// app.use(bodyParser.urlencoded({ extended: false })); 
-// app.use(bodyParser.json());
+
+const roleRouter = require('./routers/routes/role');
+const userRouter = require("./routers/routes/user");
+const postRouter = require("./routers/routes/post");
+const commentRouter = require("./routers/routes/comment");
 
 
-//use routes 
-app.use( userRoutes);
-app.use( postRoutes);
-
-
+app.use(roleRouter);
+app.use(userRouter);
+app.use(postRouter);
+app.use(commentRouter);
 
 const PORT = process.env.PORT || 4000;
+
 app.listen(PORT, () => {
-    console.log(`server is running on port ${PORT}`);
-  });
+  console.log(`server running at port ${PORT}`);
+});
