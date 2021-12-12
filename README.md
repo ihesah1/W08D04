@@ -1,5 +1,5 @@
 # W08D04
-
+![Untitled Workspace (9)](https://user-images.githubusercontent.com/92258765/145620987-70085bf3-2e28-4fc6-a697-7128dab7ad89.jpg)
 
 
 Installation
@@ -14,9 +14,16 @@ Installation
 Routes
 ---
 
-### `/api/users`
+### `/users`
 
 - GET all users
 - POST a new user
-    - Test case:
+ ### `/posts`
+ 
+  ### `/like`
+ 
+  ### `/comment`
+ 
+  ### `/role`
+ 
 
