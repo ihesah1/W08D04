@@ -39,8 +39,6 @@ const deleteComment = async (req, res) => {
   });
 
   const result = await roleModel.findById(req.token.role);
-
-  //here we check if it's Admin user OR the same user who created the comment
   if (result.role == "admin" || sameUser) {
     commentModel
       .findByIdAndUpdate(id, { $set: { isDeleted: true } })
@@ -58,7 +56,6 @@ const deleteComment = async (req, res) => {
     res.status(400).json("you don't have the priveleges to remove the comment");
   }
 };
-
 const updateComment = async (req, res) => {
   const { id } = req.params;
   const { comment } = req.body;
@@ -69,8 +66,6 @@ const updateComment = async (req, res) => {
       sameUser = true;
     }
   });
-
-  //here we check if it's the same user who created the comment
   if (sameUser) {
     commentModel
       .findByIdAndUpdate(id, { $set: { comment: comment } })
@@ -85,7 +80,7 @@ const updateComment = async (req, res) => {
         res.status(400).json(err);
       });
   } else {
-    res.status(400).json("you don't have the priveleges to update the comment");
+    res.status(400).json("you cant update the comment");
   }
 };
 
