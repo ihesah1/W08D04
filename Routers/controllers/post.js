@@ -21,7 +21,7 @@ const getPostsForAdmin = (req, res) => {
 };
 
 const getPosts = (req, res) => {
-  console.log('im hereeeeeeeeeeee');
+  console.log('helo');
   postModel
     .find({ isDeleted: false })
     .populate({path:"user comment like", match:{isDeleted:false}})

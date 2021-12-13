@@ -2,7 +2,6 @@ const express = require('express')
 const  {getPosts ,getPostById, createPost, updatePost, deletePost, giveLikeOrRemove, getPostsForAdmin} = require('./../controllers/post')
 const postRouter = express.Router()
 const authentication = require("../middlewares/authentication");
-
 postRouter.get("/posts",authentication, getPosts);
 postRouter.get("/posts/admin",authentication, getPostsForAdmin);
 postRouter.get("/posts/:id",authentication, getPostById);
